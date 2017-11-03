@@ -8,6 +8,7 @@ then
 fi
 #
 if [[ "$(\grep 'CentOS Linux release 7' /etc/centos-release 2>/dev/null)" ]]
+then
     yum install python-devel -y
     curl -LR --connect-timeout 10 https://bootstrap.pypa.io/get-pip.py | python
 fi
