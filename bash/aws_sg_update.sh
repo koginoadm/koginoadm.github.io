@@ -1,5 +1,5 @@
 #!/bin/bash
-# aws_sg.sh
+# aws_sg_update.sh
 #
 # aws ec2 describe-security-groups | jq -r .SecurityGroups[].GroupId
 # aws ec2 describe-security-groups --group-id sg-xxxxxxxx
