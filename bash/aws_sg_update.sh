@@ -6,8 +6,6 @@
 # aws ec2 describe-security-groups | jq -r .SecurityGroups[].GroupId
 # aws ec2 describe-security-groups --group-id sg-xxxxxxxx
 #
-. /usr/local/bin/function_mail.sh
-#
 declare vGroupId="sg-xxxxxxxx"
 declare vCurrentIp="$(curl -LRsS --connect-timeout 10 http://checkip.amazonaws.com/ | \egrep '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
 declare vFile="${HOME:?}/${vGroupId}"
@@ -15,6 +13,8 @@ declare -i i=0
 #
 if [[ "$(< ${vFile})" != "${vCurrentIp:?}" ]]
 then
+    #
+    . /usr/local/bin/function_mail.sh
     #
     if [[ -f ${vFile} ]]
     then
