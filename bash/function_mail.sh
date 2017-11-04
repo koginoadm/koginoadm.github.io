@@ -44,6 +44,7 @@ function mailbash() {
         echo "RCPT TO: <${vToAddress:?}>"
         sleep 1
         echo "DATA"
+        sleep 1
         # Mail Header
         echo "From: send-only <${vSmtpUser:?}>"
         echo "To: ${vToAddress:?}"
