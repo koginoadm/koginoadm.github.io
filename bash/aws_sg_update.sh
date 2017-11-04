@@ -1,6 +1,8 @@
 #!/bin/bash
 # aws_sg_update.sh
 #
+#*/2 * * * * PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin /usr/local/bin/aws_sg_update.sh >> /tmp/aws_sg_update_$(date +\%Y\%m\%d).log 2>&1
+#
 # aws ec2 describe-security-groups | jq -r .SecurityGroups[].GroupId
 # aws ec2 describe-security-groups --group-id sg-xxxxxxxx
 #
