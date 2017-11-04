@@ -11,6 +11,7 @@
 declare vGroupId="sg-xxxxxxxx"
 declare vCurrentIp="$(curl -LRsS --connect-timeout 10 http://checkip.amazonaws.com/ | \egrep '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')"
 declare vFile="${HOME:?}/${vGroupId}"
+declare -i i=0
 #
 if [[ "$(< ${vFile})" != "${vCurrentIp:?}" ]]
 then
@@ -18,12 +19,27 @@ then
     if [[ -f ${vFile} ]]
     then
         #aws ec2 revoke-security-group-ingress --group-id ${vGroupId} --protocol tcp --port 22 --cidr $(< ${vFile})/32
-        aws ec2 revoke-security-group-ingress --group-id ${vGroupId} --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "d1.djeeno.net"}]}]'
+        aws ec2 revoke-security-group-ingress --group-id ${vGroupId} \
+            --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "d1.djeeno.net"}]}]'
     fi
     #
     printf "${vCurrentIp}" > "${vFile}"
     #aws ec2 authorize-security-group-ingress --group-id ${vGroupId} --protocol tcp --port 22 --cidr $(< ${vFile})/32
-    aws ec2 authorize-security-group-ingress --group-id ${vGroupId} --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "d1.djeeno.net"}]}]'
-    mailbash koginoadm@outlook.com "[AWS][SG][d1.djeeno.net] IP Address was changed." '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "d1.djeeno.net"}]}]'
+    while (! (aws ec2 describe-security-groups --group-id ${vGroupId} | \grep --quiet $(< ${vFile})))
+    do
+        aws ec2 authorize-security-group-ingress --group-id ${vGroupId} \
+            --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "d1.djeeno.net"}]}]'
+        i=$((i+1))
+        sleep 10
+        if [[ $i -gt 3 ]]
+        then
+            mailbash koginoadm@outlook.com "[AWS][SG][d1.djeeno.net] Failed to update IP Address." \
+                '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "d1.djeeno.net"}]}]'
+            break
+        fi
+    done
+    mailbash koginoadm@outlook.com "[AWS][SG][d1.djeeno.net] IP Address was updated." \
+        '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "d1.djeeno.net"}]}]'
 fi
+#
 
