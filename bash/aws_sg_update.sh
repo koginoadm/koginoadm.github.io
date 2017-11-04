@@ -11,10 +11,10 @@ declare vCurrentIp="$(curl -LRsS --connect-timeout 10 http://checkip.amazonaws.c
 declare vFile="${HOME:?}/${vGroupId}"
 declare -i i=0
 #
+. /usr/local/bin/function_mail.sh
+#
 if [[ "$(< ${vFile})" != "${vCurrentIp:?}" ]]
 then
-    #
-    . /usr/local/bin/function_mail.sh
     #
     if [[ -f ${vFile} ]]
     then
