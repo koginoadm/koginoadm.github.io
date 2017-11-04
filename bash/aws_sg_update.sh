@@ -16,6 +16,8 @@ declare -i i=0
 if [[ "$(< ${vFile})" != "${vCurrentIp:?}" ]]
 then
     #
+    date -Is
+    #
     if [[ -f ${vFile} ]]
     then
         aws ec2 revoke-security-group-ingress --group-id ${vGroupId} --protocol tcp --port 22 --cidr $(< ${vFile})/32
