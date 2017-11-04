@@ -4,7 +4,8 @@
 function mailbash() {
     # To Address
     declare vToAddress=${1:?'$1: Set Mail ToAddress'}
-    [[ ${vToAddress} =~ [0-9a-zA-Z_\-\.]+@[0-9a-zA-Z_\-\.]+ ]] || { echo '$1: invalid address'; return 1; }
+    #[[ ${vToAddress} =~ [0-9a-zA-Z_\-\.]+@[0-9a-zA-Z_\-\.]+ ]] || { echo '$1: invalid address'; return 1; }
+    (\egrep --quiet "[0-9a-zA-Z_\-\.]+@[0-9a-zA-Z_\-\.]+" <<<"${vToAddress}") || { echo '$1: invalid address'; return 1; }
     declare vSubject=${2:?'$2: Set Mail Subject'}
     declare vBody=${3:?'$3: Set Mail Body'}
     # SMTP-AUTH
