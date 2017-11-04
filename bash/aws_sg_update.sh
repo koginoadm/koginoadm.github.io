@@ -18,9 +18,7 @@ then
     #
     if [[ -f ${vFile} ]]
     then
-        #aws ec2 revoke-security-group-ingress --group-id ${vGroupId} --protocol tcp --port 22 --cidr $(< ${vFile})/32
-        aws ec2 revoke-security-group-ingress --group-id ${vGroupId} \
-            --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'
+        aws ec2 revoke-security-group-ingress --group-id ${vGroupId} --protocol tcp --port 22 --cidr $(< ${vFile})/32
     fi
     #
     printf "${vCurrentIp}" > "${vFile}"
