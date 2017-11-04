@@ -24,7 +24,6 @@ then
     fi
     #
     printf "${vCurrentIp}" > "${vFile}"
-    #aws ec2 authorize-security-group-ingress --group-id ${vGroupId} --protocol tcp --port 22 --cidr $(< ${vFile})/32
     while (! (aws ec2 describe-security-groups --group-id ${vGroupId} | \grep --quiet $(< ${vFile})))
     do
         aws ec2 authorize-security-group-ingress --group-id ${vGroupId} \
