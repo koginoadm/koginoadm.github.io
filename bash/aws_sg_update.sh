@@ -24,7 +24,7 @@ then
     fi
     #
     printf "${vCurrentIp}" > "${vFile}"
-    while (! (aws ec2 describe-security-groups --group-id ${vGroupId} | \grep --quiet $(< ${vFile})))
+    while (! (aws ec2 describe-security-groups --group-id ${vGroupId} | \grep --quiet "$(< ${vFile})"))
     do
         aws ec2 authorize-security-group-ingress --group-id ${vGroupId} \
             --ip-permissions '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'
@@ -33,12 +33,12 @@ then
         if [[ $i -gt 3 ]]
         then
             mailbash koginoadm@outlook.com "[AWS][SG][Dynamic] !!! Failed to update IP Address !!!" \
-                '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'
+                "$(echo -e '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'"\n\n--\n$(aws ec2 describe-security-groups --group-id ${vGroupId:?})")"
             break
         fi
     done
     mailbash koginoadm@outlook.com "[AWS][SG][Dynamic] IP Address was updated." \
-        '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'
+        "$(echo -e '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'"\n\n--\n$(aws ec2 describe-security-groups --group-id ${vGroupId:?})")"
 fi
 #
 
