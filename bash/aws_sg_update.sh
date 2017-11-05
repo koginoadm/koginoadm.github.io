@@ -32,13 +32,25 @@ then
         sleep 10
         if [[ $i -gt 3 ]]
         then
-            mailbash koginoadm@outlook.com "[AWS][SG][Dynamic] !!! Failed to update IP Address !!!" \
-                "$(echo -e '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'"\n\n--\n$(aws ec2 describe-security-groups --group-id ${vGroupId:?})")"
+            mailbash koginoadm@outlook.com "[AWS][SG][Dynamic] !!! Failed to update SecurityGroups !!!" \
+                "$(
+                    echo 'Failed to update Rule:'
+                    echo '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'
+                    echo ""
+                    echo "--"
+                    aws ec2 describe-security-groups --group-id ${vGroupId:?}
+                )"
             break
         fi
     done
-    mailbash koginoadm@outlook.com "[AWS][SG][Dynamic] IP Address was updated." \
-        "$(echo -e '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'"\n\n--\n$(aws ec2 describe-security-groups --group-id ${vGroupId:?})")"
+    mailbash koginoadm@outlook.com "[AWS][SG][Dynamic] SecurityGroups updated" \
+        "$(
+            echo 'Rule updated:'
+            echo '[{"IpProtocol": "tcp", "FromPort": 22, "ToPort": 22, "IpRanges": [{"CidrIp": "'"$(< ${vFile})"'/32", "Description": "Dynamic"}]}]'
+            echo ""
+            echo "--"
+            aws ec2 describe-security-groups --group-id ${vGroupId:?}
+        )"
 fi
 #
 
