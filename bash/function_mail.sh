@@ -15,6 +15,11 @@ function mailbash() {
     declare vSmtpAuth="PLAIN"
     declare vSmtpUser="XXXXXXXX@gmail.com"
     declare vSmtpPass="XXXXXXXX"
+    # Outlook.com
+    #declare vSmtpHost="smtp-mail.outlook.com"
+    #declare vSmtpAuth="LOGIN"
+    #declare vSmtpUser="XXXXXXXX@outlook.com"
+    #declare vSmtpPass="XXXXXXXX"
     # Office365
     #declare vSmtpHost="smtp.office365.com"
     #declare vSmtpAuth="LOGIN"
