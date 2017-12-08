@@ -26,29 +26,29 @@ function mailbash() {
     #declare vSmtpPass="XXXXXXXX"
     # function
     function _smtp_stdout() {
-        sleep 3
+        sleep 2.5
         echo "EHLO $(uname -n)"
-        sleep 2
+        sleep 1.5
         if [[ ${vSmtpAuth:?} == LOGIN ]]
         then
             echo "AUTH LOGIN"
             echo "$(printf "${vSmtpUser:?}" | openssl enc -e -base64)"
             echo "$(printf "${vSmtpPass:?}" | openssl enc -e -base64)"
-            sleep 5
+            sleep 4.5
         elif [[ ${vSmtpAuth:?} == PLAIN ]]
         then
             echo "AUTH PLAIN $(printf "%s\0%s\0%s" "${vSmtpUser:?}" "${vSmtpUser:?}" "${vSmtpPass:?}" | openssl enc -e -base64 | tr -d '\n')"
-            sleep 3
+            sleep 2.5
         else
             echo "${vSmtpAuth:?} not supported" 1>&2
             echo "QUIT"
         fi
         echo "MAIL FROM: <${vSmtpUser:?}>"
-        sleep 2
+        sleep 1.5
         echo "RCPT TO: <${vToAddress:?}>"
-        sleep 2
+        sleep 1.5
         echo "DATA"
-        sleep 2
+        sleep 1.5
         # Mail Header
         echo "From: send-only <${vSmtpUser:?}>"
         echo "To: ${vToAddress:?}"
@@ -60,7 +60,7 @@ function mailbash() {
         echo "--"
         echo "This message was sent at $(date -Is)."
         echo "."
-        sleep 3
+        sleep 2.5
         echo "QUIT"
     }
     # main
